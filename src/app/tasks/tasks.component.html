@@ -1,0 +1,6 @@
+<app-new-task (add)="newTask($event)"></app-new-task>
+<app-task-list 
+    [tasks]="tasks$ | async"
+    (toggle)="toggleTask($event)"
+    (remove)="removeTask($event)"  
+  ></app-task-list>

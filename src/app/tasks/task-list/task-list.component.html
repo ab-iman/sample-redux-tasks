@@ -1,0 +1,25 @@
+<table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>ID</th>
+      <th>Done?</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let task of tasks">
+      <td>
+        <label>
+          <input type="checkbox" [checked]="task.done" (click)="toggleTask(task)">
+          {{task.title}}
+        </label>
+      </td>
+      <td>{{task.id}}</td>
+      <td>{{task.done}}</td>
+      <td>
+        <a href (click)="removeTask(task)" class="del">❌</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
