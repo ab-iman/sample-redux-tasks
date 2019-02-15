@@ -17,22 +17,22 @@ export class TasksComponent implements OnInit {
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
-    private TaskActions: TasksActions
+    private TasksActions: TasksActions
     ) { }
 
   ngOnInit() {
   }
 
   newTask(title: string) {
-    this.TaskActions.addTask(title);
+    this.TasksActions.addTask(title);
   }
 
   toggleTask(task: Task) {
-    this.TaskActions.toggleTask(task.id);
+    this.TasksActions.toggleTask(task.id);
   }
 
   removeTask(task: Task) {
-    this.TaskActions.removeTask(task.id);
+    this.TasksActions.removeTask(task.id);
   }
 
 }
