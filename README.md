@@ -1,3 +1,8 @@
+# How to run the sample
+
+1. `npm install`
+1. `ng serve -o`
+
 # NgRedux Example: Tasks
 
 ## Create a new Angular application
@@ -257,10 +262,75 @@ function toggleTask(task:Task) {
 
 ## Smart component **Tasks**
 
-Smart component already exists. Create two dumb components.
+Smart component already exists. Create two dumb components. Dumb components handle only presentation.
 
 ```typescript
 ng generate component Tasks/TaskList
 ng generate component Tasks/NewTask
 ```
 
+The smart component **Tasks** manages subscription to the store. The data is then sent as "@Input" properties of the dumb component. This helps us manage change detection strategy at the dumb component level. This would not have been possible if the dumb component subscribed to store changes directly.
+
+### Subscribing to the store
+
+The smart component **Tasks** can subscribe to the `tasks` property of the store by using the `@select` decorator.
+
+```typescript
+import { Observable } from "rxjs";
+import { select } from '@angular-redux/store';
+import { List } from "immutable";
+import { Task } from "./models";
+
+export class TasksComponent implements OnInit {
+
+    @select("tasks") tasks$: Observable<List<Task>>;
+
+}
+```
+
+The `@select()` annotation creates a subscription to the store. The variable `tasks$` ends with a `$` to indicate that it is a RxJS observable object. Normally it is required to unsubscribe from the store when this component is destroyed to prevent a memory leak. However, we can automate this by using the `| async` filter when using this property in the HTML template.
+
+```html
+<app-task-list [tasks]="tasks$ | async"></app-task-list>
+```
+
+### Invoking actions
+
+The **Tasks** component injects the `TasksActions` service in its constructor. This way, methods in the component can invoke actions in response to user actions. E.g.:
+
+```typescript
+export class TasksComponent implements OnInit {
+  
+  constructor(private TasksActions: TasksActions) {}
+
+  newTask(title: string) {
+    this.TasksActions.addTask(title);
+  }
+
+}
+```
+
+## Adding Redux Middleware
+
+In `app.module.ts`, we have initialized `NgRedux` in the module constructor. We have only passed 2 parameters so far, but we can pass in a 3rd parameter to initialize any middleware we like. E.g.:
+
+```typescript
+import { createLogger } from 'redux-logger'
+
+...
+
+ngRedux.configureStore(rootReducer, {}, [createLogger({ collapsed: true })]);
+```
+
+This should cause every action to get logged to browser console.
+
+Similarly, you can install the **Redux Dev Tools** Chrome extension from the [Chrome web store](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) and then enable a store enhancer provided by the ngRedux library.
+
+```typescript
+import { NgRedux, NgReduxModule, DevToolsExtension } from "@angular-redux/store";
+
+...
+
+let storeEnhancers = devTools.isEnabled() ? [devTools.enhancer] : [];
+ngRedux.configureStore(rootReducer, {}, [createLogger({ collapsed: true })], storeEnhancers);
+```

@@ -3,8 +3,7 @@ import { TasksActions } from './actions';
 import { Observable } from 'rxjs';
 import { List } from 'immutable';
 import { Task } from './models';
-import { select, NgRedux } from '@angular-redux/store';
-import { IAppState } from '../store';
+import { select } from '@angular-redux/store';
 
 @Component({
   selector: 'app-tasks',
@@ -16,7 +15,6 @@ export class TasksComponent implements OnInit {
   @select("tasks") tasks$: Observable<List<Task>>;
 
   constructor(
-    private ngRedux: NgRedux<IAppState>,
     private TasksActions: TasksActions
     ) { }
 

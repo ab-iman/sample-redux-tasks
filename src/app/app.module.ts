@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgRedux, NgReduxModule } from "@angular-redux/store";
+import { NgRedux, NgReduxModule, DevToolsExtension } from "@angular-redux/store";
 import { createLogger } from 'redux-logger'
 
 import { AppComponent } from './app.component';
@@ -27,7 +27,9 @@ import { NewTaskComponent } from './Tasks/new-task/new-task.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(ngRedux: NgRedux<IAppState>) {
-    ngRedux.configureStore(rootReducer, {}, [createLogger({ collapsed: true })]);
+  constructor(ngRedux: NgRedux<IAppState>, devTools: DevToolsExtension) {
+    let middleware = [createLogger({ collapsed: true })];
+    let storeEnhancers = devTools.isEnabled() ? [devTools.enhancer()] : [];
+    ngRedux.configureStore(rootReducer, {}, middleware, storeEnhancers);
   }
 }
