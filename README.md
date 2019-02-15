@@ -331,6 +331,6 @@ import { NgRedux, NgReduxModule, DevToolsExtension } from "@angular-redux/store"
 
 ...
 
-let storeEnhancers = devTools.isEnabled() ? [devTools.enhancer] : [];
+let storeEnhancers = devTools.isEnabled() ? [devTools.enhancer()] : [];
 ngRedux.configureStore(rootReducer, {}, [createLogger({ collapsed: true })], storeEnhancers);
 ```
